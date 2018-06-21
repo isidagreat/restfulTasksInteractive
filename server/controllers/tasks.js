@@ -37,16 +37,29 @@ module.exports = {
         });
 },
 update: function (req , res){
-    // Create a a new Quote with the name and age
-    User.update({_id: req.params.id},{description:req.body.description, completed: req.body.completed, updated_at: new Date()}, function(err){
-        if(err){
-            console.log("Something went Wrong");
-            res.redirect('/')
-        } else{
-            console.log("successfully updated Task");
-            res.redirect('/tasks');
+
+    User.findOne({_id: req.params.id}, (err, _user) => {
+        console.log("Found USer")
+        console.log(_user)
+        if (err) {
+            // Code...
+            return res.json({error: "notfound"})
         }
+        else {
+            _user.review.push({rating:req.body.rating, comment:req.body.comment});
+            _user.save(function(err){
+                if(err){
+                    console.log("Something went Wrong");
+                } else{
+                    console.log("successfully Created User");
+                    return res.json({_user});
+                }
+        });
+    }
     });
+
+
+
 
 
 },
